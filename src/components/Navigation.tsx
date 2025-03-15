@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react';
 import { useLocation, Link, useNavigate } from 'react-router-dom';
 import { getAuth, onAuthStateChanged, signOut } from 'firebase/auth';
-import { ChevronLeft, ChevronRight } from 'lucide-react';
+import { Menu, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import '../google-fonts.css';
 
@@ -11,11 +11,22 @@ export function Navigation() {
   const [activePath, setActivePath] = useState<string>('');
   const [user, setUser] = useState<any>(null);
   const [isCollapsed, setIsCollapsed] = useState(false);
+  const [isMobile, setIsMobile] = useState(window.innerWidth < 768);
+  const [isMenuOpen, setIsMenuOpen] = useState(false); // Menu user trên mobile
   const auth = getAuth();
 
   useEffect(() => {
     setActivePath(location.pathname);
   }, [location]);
+
+  useEffect(() => {
+    const handleResize = () => {
+      setIsMobile(window.innerWidth < 768);
+    };
+
+    window.addEventListener('resize', handleResize);
+    return () => window.removeEventListener('resize', handleResize);
+  }, []);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
@@ -33,7 +44,7 @@ export function Navigation() {
     }
   };
 
-  if (!user) return null; // Chỉ hiển thị Navigation khi đã đăng nhập
+  if (!user) return null;
 
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard' },
@@ -44,29 +55,29 @@ export function Navigation() {
 
   return (
     <nav
-      className={`fixed left-0 top-0 h-full bg-white shadow-lg transition-all duration-300 flex flex-col ${
-        isCollapsed ? 'w-16' : 'w-64'
+      className={`fixed bg-white shadow-lg transition-all duration-300 flex z-50 ${
+        isMobile
+          ? 'bottom-0 w-full h-16 flex-row items-center justify-between px-4' // Mobile Navigation
+          : `left-0 top-0 h-full flex-col ${isCollapsed ? 'w-16' : 'w-64'}`
       }`}
     >
-      {/* Logo */}
-      <div className="h-20 flex items-center justify-center border-b border-gray-200">
+      {/* Logo Luôn Hiển Thị */}
+      <div className={`flex items-center ${isMobile ? 'h-full' : 'h-20 justify-center border-b border-gray-200'}`}>
         <Link to="/" className="flex items-center space-x-2">
           <img
             src="https://res.cloudinary.com/dk7hsdijn/image/upload/c_thumb,w_200,g_face/v1741444897/Logo_dxl23c.png"
             alt="Logo"
-            className="h-14 w-14 object-cover"
+            className="h-10 w-10 object-cover"
           />
-          {!isCollapsed && (
-            <span className="montserrat-uniquifier text-2xl text-black">
-              GLORGAMES
-            </span>
+          {!isCollapsed && !isMobile && (
+            <span className="montserrat-uniquifier text-2xl text-black">GLORGAMES</span>
           )}
         </Link>
       </div>
 
       {/* Menu Items */}
-      <div className="p-4 flex-1">
-        <ul className="space-y-4">
+      <div className={`flex-1 ${isMobile ? 'flex justify-around' : 'p-4'}`}>
+        <ul className={`${isMobile ? 'flex space-x-4' : 'space-y-4'}`}>
           {menuItems.map(({ path, label }) => (
             <li key={path}>
               <motion.div
@@ -79,7 +90,7 @@ export function Navigation() {
                     activePath === path
                       ? 'bg-gray-800 text-white'
                       : 'bg-transparent text-gray-600 hover:bg-gray-800 hover:text-white'
-                  }`}
+                  } ${isMobile ? 'text-sm' : ''}`}
                 >
                   {isCollapsed ? label.charAt(0) : label}
                 </Link>
@@ -89,23 +100,53 @@ export function Navigation() {
         </ul>
       </div>
 
-      {/* Bottom: User info & Sign Out + Toggle Button */}
-      <div className="border-t border-gray-200 p-4">
-        {!isCollapsed && (
-          <>
-            <p className="text-sm text-gray-700">Logged in as:</p>
-            <p className="text-base font-medium text-black mb-2">
-              {user.email || user.displayName}
-            </p>
-            <button
-              onClick={handleSignOut}
-              className="w-full flex justify-center items-center py-2 px-4 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
+      {/* User Info + Sign Out */}
+      {isMobile ? (
+        <div className="relative">
+          <button
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            className="p-2 bg-gray-200 rounded-full hover:bg-gray-300 transition-colors duration-300"
+          >
+            <Menu className="h-6 w-6 text-gray-700" />
+          </button>
+
+          {isMenuOpen && (
+            <div className="absolute bottom-16 right-0 bg-white shadow-lg p-4 rounded-lg">
+              <p className="text-sm text-gray-700">Logged in as:</p>
+              <p className="text-base font-medium text-black mb-2">
+                {user.email || user.displayName}
+              </p>
+              <button
+                onClick={handleSignOut}
+                className="w-full flex justify-center items-center py-2 px-4 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
+              >
+                <LogOut className="h-5 w-5 mr-2" /> Sign Out
+              </button>
+            </div>
+          )}
+        </div>
+      ) : (
+        <div className="border-t border-gray-200 p-4">
+          {!isCollapsed && (
+            <>
+              <p className="text-sm text-gray-700">Logged in as:</p>
+              <p className="text-base font-medium text-black mb-2">
+                {user.email || user.displayName}
+              </p>
+            </>
+          )}
+      
+          <button
+            onClick={handleSignOut}
+            className="w-full flex justify-center items-center py-2 px-4 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
             >
-              Sign Out
-            </button>
-          </>
-        )}
-        {/* Nút toggle */}
+            Sign Out
+          </button>
+        </div>
+      )}
+
+      {/* Nút toggle (Chỉ hiển thị trên PC) */}
+      {!isMobile && (
         <div className="mt-4 flex justify-center">
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -118,7 +159,7 @@ export function Navigation() {
             )}
           </button>
         </div>
-      </div>
+      )}
     </nav>
   );
 }
