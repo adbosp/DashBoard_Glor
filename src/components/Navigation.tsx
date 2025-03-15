@@ -33,7 +33,8 @@ export function Navigation() {
     }
   };
 
-  // Các mục menu – nếu có icon riêng thì có thể thay thế ký tự đầu tiên
+  if (!user) return null; // Chỉ hiển thị Navigation khi đã đăng nhập
+
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/Games', label: 'Games' },
@@ -63,64 +64,61 @@ export function Navigation() {
         </Link>
       </div>
 
-      {/* Menu Items (hiển thị khi đã đăng nhập) */}
-      {user && (
-        <div className="p-4 flex-1">
-          <ul className="space-y-4">
-            {menuItems.map(({ path, label }) => (
-              <li key={path}>
-                <motion.div
-                  whileHover={{ scale: 1.05, filter: 'brightness(1.1)' }}
-                  transition={{ type: 'spring', stiffness: 300 }}
-                >
-                  <Link
-                    to={path}
-                    className={`block transition-colors duration-300 text-lg font-medium rounded-md border border-gray-800 p-2 text-center hover:backdrop-blur-sm ${
-                      activePath === path
-                        ? 'bg-gray-800 text-white'
-                        : 'bg-transparent text-gray-600 hover:bg-gray-800 hover:text-white'
-                    }`}
-                  >
-                    {isCollapsed ? label.charAt(0) : label}
-                  </Link>
-                </motion.div>
-              </li>
-            ))}
-          </ul>
-        </div>
-      )}
-      {/* Bottom: User info & Sign Out + Toggle Button */}
-      {user && (
-        <div className="border-t border-gray-200 p-4">
-          {!isCollapsed && (
-            <>
-              <p className="text-sm text-gray-700">Logged in as:</p>
-              <p className="text-base font-medium text-black mb-2">
-                {user.email || user.displayName}
-              </p>
-              <button
-                onClick={handleSignOut}
-                className="w-full flex justify-center items-center py-2 px-4 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
+      {/* Menu Items */}
+      <div className="p-4 flex-1">
+        <ul className="space-y-4">
+          {menuItems.map(({ path, label }) => (
+            <li key={path}>
+              <motion.div
+                whileHover={{ scale: 1.05, filter: 'brightness(1.1)' }}
+                transition={{ type: 'spring', stiffness: 300 }}
               >
-                Sign Out
-              </button>
-            </>
-          )}
-          {/* Nút toggle */}
-          <div className="mt-4 flex justify-center">
+                <Link
+                  to={path}
+                  className={`block transition-colors duration-300 text-lg font-medium rounded-md border border-gray-800 p-2 text-center hover:backdrop-blur-sm ${
+                    activePath === path
+                      ? 'bg-gray-800 text-white'
+                      : 'bg-transparent text-gray-600 hover:bg-gray-800 hover:text-white'
+                  }`}
+                >
+                  {isCollapsed ? label.charAt(0) : label}
+                </Link>
+              </motion.div>
+            </li>
+          ))}
+        </ul>
+      </div>
+
+      {/* Bottom: User info & Sign Out + Toggle Button */}
+      <div className="border-t border-gray-200 p-4">
+        {!isCollapsed && (
+          <>
+            <p className="text-sm text-gray-700">Logged in as:</p>
+            <p className="text-base font-medium text-black mb-2">
+              {user.email || user.displayName}
+            </p>
             <button
-              onClick={() => setIsCollapsed(!isCollapsed)}
-              className="flex items-center justify-center p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-300"
+              onClick={handleSignOut}
+              className="w-full flex justify-center items-center py-2 px-4 rounded-lg text-sm font-medium bg-red-500 text-white hover:bg-red-600 transition-colors duration-300"
             >
-              {isCollapsed ? (
-                <ChevronRight className="h-5 w-5 text-gray-700" />
-              ) : (
-                <ChevronLeft className="h-5 w-5 text-gray-700" />
-              )}
+              Sign Out
             </button>
-          </div>
+          </>
+        )}
+        {/* Nút toggle */}
+        <div className="mt-4 flex justify-center">
+          <button
+            onClick={() => setIsCollapsed(!isCollapsed)}
+            className="flex items-center justify-center p-2 rounded-full bg-gray-200 hover:bg-gray-300 transition-colors duration-300"
+          >
+            {isCollapsed ? (
+              <ChevronRight className="h-5 w-5 text-gray-700" />
+            ) : (
+              <ChevronLeft className="h-5 w-5 text-gray-700" />
+            )}
+          </button>
         </div>
-      )}
+      </div>
     </nav>
   );
 }

@@ -4,16 +4,21 @@ import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase
 import { db } from '../firebase';
 import { Game } from '../types';
 import { Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 export function Games() {
   // --- Authentication state ---
   const auth = getAuth();
+  const navigate = useNavigate(); // Khai báo useNavigate để điều hướng
   const [user, setUser] = useState<any>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
       console.log('Auth state changed:', currentUser);
       setUser(currentUser);
+      if (!currentUser) {
+        navigate('/'); // Chuyển hướng đến trang login nếu chưa đăng nhập
+      }
     });
     return unsubscribe;
   }, [auth]);

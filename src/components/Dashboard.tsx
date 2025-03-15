@@ -1,7 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import { useState, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Game } from '../types';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 import {
   PieChart,
   Pie,
@@ -18,6 +20,21 @@ import {
 import { motion } from 'framer-motion';
 
 export function Dashboard() {
+    // --- Authentication state ---
+    const auth = getAuth();
+    const navigate = useNavigate(); // Khai báo useNavigate để điều hướng
+    const [user, setUser] = useState<any>(null);
+  
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        console.log('Auth state changed:', currentUser);
+        setUser(currentUser);
+        if (!currentUser) {
+          navigate('/'); // Chuyển hướng đến trang login nếu chưa đăng nhập
+        }
+      });
+      return unsubscribe;
+    }, [auth]);
   const [games, setGames] = useState<Game[]>([]);
 
   useEffect(() => {

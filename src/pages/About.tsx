@@ -1,10 +1,27 @@
 import React, { useState, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { aboutCollection } from '../types';
 import { Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 export function About() {
+  // --- Authentication state ---
+  const auth = getAuth();
+  const navigate = useNavigate(); // Khai báo useNavigate để điều hướng
+  const [user, setUser] = useState<any>(null);
+
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+      console.log('Auth state changed:', currentUser);
+      setUser(currentUser);
+      if (!currentUser) {
+        navigate('/'); // Chuyển hướng đến trang login nếu chưa đăng nhập
+      }
+    });
+    return unsubscribe;
+  }, [auth]);
   // Lưu danh sách các record có thêm field id
   const [aboutRecords, setAboutRecords] = useState<(aboutCollection & { id: string })[]>([]);
   // Lưu id của record đang được chỉnh sửa (nếu có)

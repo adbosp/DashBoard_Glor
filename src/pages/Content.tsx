@@ -1,15 +1,30 @@
 import React, { useState, useEffect } from 'react';
+import { getAuth, onAuthStateChanged } from 'firebase/auth';
 import { collection, getDocs, addDoc, updateDoc, deleteDoc, doc } from 'firebase/firestore';
 import { db } from '../firebase';
 import { HeroContent } from '../types';
 import { Send } from 'lucide-react';
+import { useNavigate } from 'react-router-dom'; // Import useNavigate
 
 export function Content() {
   // Danh sách hero content có thêm trường id
   const [heroContents, setHeroContents] = useState<(HeroContent & { id: string })[]>([]);
   // Lưu id của nội dung đang được chỉnh sửa (nếu có)
   const [selectedId, setSelectedId] = useState<string | null>(null);
+   const auth = getAuth();
+    const navigate = useNavigate(); // Khai báo useNavigate để điều hướng
+    const [user, setUser] = useState<any>(null);
 
+    useEffect(() => {
+      const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
+        console.log('Auth state changed:', currentUser);
+        setUser(currentUser);
+        if (!currentUser) {
+          navigate('/'); // Chuyển hướng đến trang login nếu chưa đăng nhập
+        }
+      });
+      return unsubscribe;
+    }, [auth]);
   // Form dữ liệu cho hero content
   const [formData, setFormData] = useState<HeroContent>({
     title: '',
