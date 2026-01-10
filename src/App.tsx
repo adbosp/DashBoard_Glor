@@ -4,11 +4,13 @@ import { About } from './pages/About';
 import { Content } from './pages/Content';
 import { Games } from './pages/Games';
 import { Login } from './pages/Login';
+import { NewsManager } from "./pages/NewsManager";
 import { FaFacebook } from "react-icons/fa";
 import { FaYoutube } from "react-icons/fa";
 import { FaSquareXTwitter } from "react-icons/fa6";
 import './google-fonts.css';
 import { Dashboard } from './components/Dashboard';
+import { NewsEditor } from "./pages/NewsEditor";
 function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-8">
@@ -54,6 +56,11 @@ function App() {
             <Route path="/Content" element={<Content />} />
             <Route path="/About" element={<About />} />
             <Route path="/Games" element={<Games />} />
+            <Route path="/News" element={<NewsManager />} />
+              {/* NEWS */}
+            <Route path="/News" element={<NewsManager />} />
+            <Route path="/News/create" element={<NewsEditor />} />
+            <Route path="/News/edit/:id" element={<NewsEditor />} />
           </Routes>
         </main>
         <Footer />

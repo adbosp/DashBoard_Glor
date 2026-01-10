@@ -4,6 +4,7 @@ import { collection, getDocs } from 'firebase/firestore';
 import { db } from '../firebase';
 import { Game } from '../types';
 import { useNavigate } from 'react-router-dom';
+
 import {
   PieChart,
   Pie,

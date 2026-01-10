@@ -17,3 +17,13 @@ export interface HeroContent {
   description: string;
   videoUrl: string;
 }
+export type News = {
+  id: string;
+  title: string;
+  description: string;
+  content: string;
+  image: string;
+  status: "draft" | "published";
+  createdAt?: any;
+  updatedAt?: any;
+};

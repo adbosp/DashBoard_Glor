@@ -5,6 +5,7 @@ import { Menu, LogOut, ChevronLeft, ChevronRight } from 'lucide-react';
 import { motion } from 'framer-motion';
 import '../google-fonts.css';
 
+
 export function Navigation() {
   const location = useLocation();
   const navigate = useNavigate();
@@ -49,8 +50,10 @@ export function Navigation() {
   const menuItems = [
     { path: '/dashboard', label: 'Dashboard' },
     { path: '/Games', label: 'Games' },
+    { path: '/News', label: 'News' },
     { path: '/Content', label: 'Content' },
     { path: '/About', label: 'About' },
+    
   ];
 
   return (
