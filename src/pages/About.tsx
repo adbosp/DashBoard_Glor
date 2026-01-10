@@ -10,7 +10,7 @@ export function About() {
   // --- Authentication state ---
   const auth = getAuth();
   const navigate = useNavigate(); // Khai báo useNavigate để điều hướng
-  const [user, setUser] = useState<any>(null);
+  const [ setUser] = useState<any>(null);
 
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (currentUser) => {
