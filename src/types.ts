@@ -22,7 +22,7 @@ export type News = {
   title: string;
   description: string;
   content: string;
-  image: string;
+  coverImage: string;
   status: "draft" | "published";
   createdAt?: any;
   updatedAt?: any;

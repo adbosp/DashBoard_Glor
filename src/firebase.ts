@@ -7,7 +7,7 @@ const firebaseConfig = {
   authDomain: "glorgames-web.firebaseapp.com",
   projectId: "glorgames-web",
 
-  // 🔥 FIX Ở ĐÂY
+  // 🔥 FIX BẮT BUỘC
   storageBucket: "glorgames-web.appspot.com",
 
   messagingSenderId: "356613565549",

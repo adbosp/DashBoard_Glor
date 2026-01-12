@@ -11,6 +11,8 @@ import { FaSquareXTwitter } from "react-icons/fa6";
 import './google-fonts.css';
 import { Dashboard } from './components/Dashboard';
 import { NewsEditor } from "./pages/NewsEditor";
+import { NewsDetailView } from "./pages/NewsDetailView";
+
 function Footer() {
   return (
     <footer className="bg-gray-800 text-white py-8">
@@ -61,6 +63,8 @@ function App() {
             <Route path="/News" element={<NewsManager />} />
             <Route path="/News/create" element={<NewsEditor />} />
             <Route path="/News/edit/:id" element={<NewsEditor />} />
+            <Route path="/News/view/:id" element={<NewsDetailView />} />
+
           </Routes>
         </main>
         <Footer />
